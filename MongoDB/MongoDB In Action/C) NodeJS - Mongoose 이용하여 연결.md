@@ -74,3 +74,75 @@ mongoose.model("User", userSchema, "myfreename");
 ```javascript
 require("./경로/userSchema"); // 이렇게만 DB 연결 부분에 적어주면 된다.
 ```
+
+---
+
+**편의 기능**
+
+- 위에서 언급된 기능 말고도 많이 쓰이는 3가지 기능이 있다.
+
+- 첫 번째 기능으로는 virtual 이라고하는 도큐먼트에 없지만 객체에 있는 가상의 필드를 만들어 준다.
+
+```javascript
+userSchema.virtual('detail').get(function() {
+    return '저는 ${this.nickname}이고 생일은 ${this.birth.toLocaleString()}입니다.`;
+});
+```
+
+- 스키마에 virtual 을 붙이면 users 컬렉션을 조회할 때 { email: ..., password: ..., nickname: ..., detail: ...} 처럼 detail 필드가 생긴다. 그리고 get 메소드 안에 넣어준 함수의 return 값이 들어있다. 기존 필드들을 활용해서 새로운 가상 필드를 만드는 기능이다.
+
+- 다음은 사용자 정의 메소드를 붙이는 기능이다.
+
+```javascript
+userSchema.emthods.comparePassword = function (pw, cb) {
+  if (this.password === pw) {
+    cb(null, true);
+  } else {
+    cb("password 불일치");
+  }
+};
+
+// 나중에 user 도큐먼트를 받게 되면
+user.comparePassword("비밀번호", function (err, result) {
+  if (err) {
+    throw err;
+  }
+  console.log(result);
+});
+```
+
+- 직접 비밀번호가 일치하는지 확인하는 코드를 짤 필요 없이 userSchema 에 정의한 메소드로 재사용할 수 있다. 또 도큐먼트가 아닌 모델이나 쿼리에 직접 static method 를 붙일 수도 있다.
+
+```javascript
+userSchema.statics.findByPoint = function (point) {
+  return this.find({ point: { $gt: point } });
+};
+
+userSchema.query.sortByName = function (order) {
+  return this.sort({ nickname: order });
+};
+
+Users.findByPoint(50).sortByName(-1);
+```
+
+- 마지막으로 pre 와 post 메소드이다. 스키마에 붙여 사용하는데, 각각 특정 동작 이전, 이후에 어떤 행동을 취할 지를 정의할 수 있다. Hook 을 건다고 생각하면 된다.
+
+```javascript
+userSchema.pre("save", function (next) {
+  if (!this.email) {
+    // email 필드가 없으면 에러 표시 후 저장 취소
+    throw "이메일이 없습니다";
+  }
+  if (!this.createdAt) {
+    // createdAt 필드가 없으면 추가
+    this.createdAt = new Date();
+  }
+  next();
+});
+
+userSchema.post("find", function (result) {
+  console.log("저장 완료", result);
+});
+```
+
+> save 전 호출, next 를 실행하지 않으면 save 가 되지 않기 때문에 최종 검증으로 사용, find 를 호출한 다음에 실행
