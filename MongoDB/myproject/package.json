@@ -1,0 +1,15 @@
+{
+  "name": "myproject",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.6.6"
+  },
+  "main": "app.js",
+  "keywords": [],
+  "description": ""
+}
