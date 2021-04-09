@@ -144,5 +144,5 @@ userSchema.post("find", function (result) {
   console.log("저장 완료", result);
 });
 ```
-
-> save 전 호출, next 를 실행하지 않으면 save 가 되지 않기 때문에 최종 검증으로 사용, find 를 호출한 다음에 실행
+ 
+> save 전 호출, next 를 실행하지 않으면 save 가 되지 않기 때문에 최종 검증으로 사용, find 를 호출한 다음에 실행.
