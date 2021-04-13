@@ -38,7 +38,7 @@ userSchema.virtual('detail').get(function() {
   return '저는 ${this.nickname}이고 생일은 ${this.birth.toLocaleString()}입니다.`;
 });
 
-userSchema.emthods.comparePassword = function(pw, cb) {
+userSchema.methods.comparePassword = function(pw, cb) {
   if (this.password === pw) {
     cb(null, true);
   } else {
