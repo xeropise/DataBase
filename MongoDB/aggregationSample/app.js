@@ -68,4 +68,75 @@ client.connect(function (err) {
     { $group: { _id: "$category_ids", count: { $sum: 1 } } },
     { $out: "countsByCategory" },
   ]);
+
+  db.collection("reviews").aggregate([
+    {
+      $group: {
+        _id: "$user_id",
+        count: { $sum: 1 },
+        avg_helpful: { $avg: "$helpful_votes" },
+      },
+    },
+  ]);
+
+  db.orders.aggregate([
+    { $match: { purchase_data: { $gre: new Date(2010, 0, 1) } } },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$purchase_data" },
+          month: { $month: "$purchase_data" },
+        },
+        count: { $sum: 1 },
+        totla: { $sum: "$sub_total" },
+      },
+    },
+    { $sort: { _id: -1 } },
+  ]);
+
+  let upperManhattenOrder = {
+    "shipping_address.zip": { $gte: 10019, $lt: 10040 },
+  };
+  let sumByUserId = { _id: "$user_id", total: { $sum: "$sub_total" } };
+
+  let orderTotalLarge = { total: { $gt: 10000 } };
+
+  let sortTotalDesc = { total: -1 };
+
+  db.collection("orders").aggregate([
+    { $match: upperManhattenOrder },
+    { $group: sumByUserId },
+    { $match: orderTotalLarge },
+    { $sort: sortTotalDesc },
+    { $out: "targetedCustomers" },
+  ]);
+
+  db.collection("orders").aggregate([
+    { $group: sumByUserId },
+    { $match: orderTotalLarge },
+    { $limit: 10 },
+  ]);
+
+  db.collection("users").aggregate([
+    { $match: { username: "kbanker" } },
+    {
+      $project: {
+        name: { $concat: ["$first_name", " ", "$last_name"] },
+        firstInitial: { $substr: ["$first_name", 0, 1] },
+        usernameUpperCase: { $toUpper: "$username" },
+      },
+    },
+  ]);
+
+  let testSet1 = ["tools"];
+
+  db.collection("products").aggregate([
+    {
+      $project: {
+        productName: "$name",
+        tags: 1,
+        setUnion: { $setUnion: ["$tags", testSet1] },
+      },
+    },
+  ]);
 });
