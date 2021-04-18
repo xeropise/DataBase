@@ -61,7 +61,7 @@ userSchema.index({ email: 1, nickname: 1 });
 module.exports = mongoose.model("User", userSchema);
 ```
 
-- 마지막 줄 mongoose.model() 을 호출할 떄 스키마가 등록 된다. 나중에 스키마를 수정할 떄 , 미리 저장되어 있떤 데이터들은 바꾸지 않으니 조심해야 한다. 대신 SQL 처럼 alter table 명령 없이 자유롭게 수정할 수 있어 좋다.
+- 마지막 줄 mongoose.model() 을 호출할 떄 스키마가 등록 된다. 나중에 스키마를 수정할 떄 , 미리 저장되어 있던 데이터들은 바꾸지 않으니 조심해야 한다. 대신 SQL 처럼 alter table 명령 없이 자유롭게 수정할 수 있어 좋다.
 
 - Mongoose 는 model 의 첫 번째 인자로 컬렉션 이름을 만든다. User 이면 소문자화 후 복수형으로 바꿔서 users 컬렉션이 된다. 이런 강제 개명이 싫다면 세 번째 인자로 컬렉션 이름을 줄 수 있다.
 
@@ -144,5 +144,5 @@ userSchema.post("find", function (result) {
   console.log("저장 완료", result);
 });
 ```
- 
+
 > save 전 호출, next 를 실행하지 않으면 save 가 되지 않기 때문에 최종 검증으로 사용, find 를 호출한 다음에 실행.
