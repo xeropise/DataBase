@@ -1,0 +1,20 @@
+{
+  "name": "booksearch",
+  "version": "0.0.1",
+  "description": "개발 서적 검색 사이트 만들기",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "xeropise",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.6",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.4",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.0"
+  }
+}
