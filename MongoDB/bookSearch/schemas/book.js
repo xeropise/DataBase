@@ -35,7 +35,8 @@ const bookSchema = new Schema({
     type: String,
   },
   translators: {
-    type: String,
+    type: Array,
+    required: false,
   },
   url: {
     type: String,

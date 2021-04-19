@@ -4,8 +4,6 @@ const Book = require("./schemas/book");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const keywords = ["자바", "자바스크립트"];
-
 const config = {
   headers: {
     Authorization: process.env.KAKAO_KEY,
@@ -16,23 +14,22 @@ function getBooks(keyword) {
   return axios.get(process.env.KAKAO_URL + encodeURI(keyword), config);
 }
 
-async function startSearch(keyword) {
+async function searchKeyword(keyword) {
   try {
     let { data } = await getBooks(keyword);
-    return data.documents;
+    await Book.insertMany(data.documents, { ordered: false });
   } catch (error) {
     console.log(error);
+  } finally {
   }
 }
 
 async function startEnd() {
-  connect();
+  await connect();
 
-  const documents = await startSearch("자바");
-
-  Book.insertMany(documents).then(function () {
-    console.log("finished");
-  });
+  await searchKeyword("자바");
+  await searchKeyword("자바스크립트");
+  await searchKeyword("타입스크립트");
 
   disconnect();
 }
