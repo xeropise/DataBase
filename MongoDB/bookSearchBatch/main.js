@@ -27,11 +27,19 @@ async function searchKeyword(keyword) {
 async function startEnd() {
   await connect();
 
-  await searchKeyword("자바");
-  await searchKeyword("자바스크립트");
-  await searchKeyword("타입스크립트");
+  let keywords = [
+    "자바",
+    "파이썬",
+    "자바스크립트",
+    "타입스크립트",
+    "몽고 디비",
+  ];
 
-  disconnect();
+  Promise.all(
+    keywords.map(async (v) => {
+      await searchKeyword(v); // map으로 모든 배열을 promise 로 변환
+    })
+  ).then(() => disconnect());
 }
 
-startEnd();
+module.exports = startEnd;
